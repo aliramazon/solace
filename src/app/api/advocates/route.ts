@@ -1,11 +1,6 @@
-import db from "../../../db";
-import { advocates } from "../../../db/schema";
-
+import { advocatesService } from "../../../server/services/advocates";
 export async function GET() {
-  // Uncomment this line to use a database
-  const data = await db.select().from(advocates);
+  const data = await advocatesService.getAll();
 
-  // const data = advocateData;
-
-  return Response.json({ data });
+  return Response.json({ data: data.slice(0, 50) });
 }

@@ -16,8 +16,16 @@ const generateCity = (cities: string[]) => {
 };
 
 const generateSpeciality = (specialties: string[]) => {
-  const random1 = Math.floor(Math.random() * 24);
-  const random2 = Math.floor(Math.random() * (24 - random1)) + random1 + 1;
+  let random1 = Math.floor(Math.random() * specialties.length); // 12
+
+  let random2 =
+    Math.floor(Math.random() * (specialties.length - random1)) + random1 + 1;
+
+  const difference = random2 - random1;
+
+  if (difference >= 5) {
+    random2 = random1 + 3;
+  }
 
   return specialties.slice(random1, random2);
 };
