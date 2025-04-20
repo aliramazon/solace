@@ -58,6 +58,7 @@ export default function Home() {
       <br />
       <table>
         <thead>
+          <th>Avatar</th>
           <th>First Name</th>
           <th>Last Name</th>
           <th>City</th>
@@ -69,7 +70,10 @@ export default function Home() {
         <tbody>
           {filteredAdvocates.map((advocate) => {
             return (
-              <tr>
+              <tr key={advocate}>
+                <td>
+                  <img src={advocate.avatar} alt="" />
+                </td>
                 <td>{advocate.firstName}</td>
                 <td>{advocate.lastName}</td>
                 <td>{advocate.city}</td>
