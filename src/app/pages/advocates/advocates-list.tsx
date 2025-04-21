@@ -9,7 +9,7 @@ export const AdvocatesList: React.FC<AdvocatesListProps> = ({ data }) => {
   return (
     <main className="container advocates__list">
       {data.map((advocate) => {
-        return <AdvocateCard data={advocate} />;
+        return <AdvocateCard key={advocate.id} data={advocate} />;
       })}
     </main>
   );

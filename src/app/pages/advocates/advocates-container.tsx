@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { advocatesService } from "../../../services/advocates";
 import { Advocate } from "../../../types/advocate";
 import { isIncluded } from "../../../utils";
+import { AdvocatesFilters } from "./advocates-filters";
+import { AdvocatesHeader } from "./advocates-header";
 import { AdvocatesList } from "./advocates-list";
 import "./styles.css";
 
@@ -48,15 +50,20 @@ export const AdvocatesContainer = () => {
     }
   }, [searchText]);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-
-  const onClick = () => {
-    setFilteredAdvocates(advocates);
+  const onTextSearch = (value: string) => {
+    setSearchText(value);
   };
 
   if (isError) return <p>Error</p>;
 
-  return <AdvocatesList data={filteredAdvocates} />;
+  return (
+    <>
+      <AdvocatesHeader />
+      <AdvocatesFilters
+        onTextSearch={onTextSearch}
+        textSearchValue={searchText}
+      />
+      <AdvocatesList data={filteredAdvocates} />
+    </>
+  );
 };

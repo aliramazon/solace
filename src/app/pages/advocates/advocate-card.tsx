@@ -33,7 +33,7 @@ export const AdvocateCard: React.FC<AdvocateCardProps> = ({ data }) => {
         </span>
         <div className="advocate__specialities">
           {data.specialties.map((speciality) => {
-            return <AdvocateSpeciality text={speciality} />;
+            return <AdvocateSpeciality key={speciality} text={speciality} />;
           })}
         </div>
         <span className="advocate__phone-number ">

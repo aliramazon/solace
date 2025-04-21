@@ -10,6 +10,7 @@ export const AdvocateSpeciality: React.FC<AdvocateSpecialityProps> = ({
   return (
     <div className="advocate__speciality">
       <ListCheck />
+
       <span className="advocate__speciality-text">{text}</span>
     </div>
   );
