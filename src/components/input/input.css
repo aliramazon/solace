@@ -1,0 +1,87 @@
+/* Base */
+
+.input-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input {
+  outline: none !important;
+  height: 4rem;
+  border: 0.1rem solid var(--neutral-grey);
+  padding: 0 var(--space-12);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+  color: var(--neutral-dark-grey);
+  width: 100%;
+  transition: all 0.3s;
+  border-radius: var(--border-radius-16);
+}
+
+.input::placeholder {
+  color: var(--neutral-dark-grey);
+}
+
+/* Hover State */
+
+.input:hover:not(:disabled),
+.input-base:hover .input:not(:disabled) {
+  border-color: var(--accent-mid);
+}
+
+.input:hover:not(:disabled) + .input-clear-btn > svg,
+.input-base:hover .input-clear-btn > svg {
+  fill: var(--accent-mid);
+}
+
+/* Focus State */
+
+.input:focus {
+  border-color: var(--accent-mid);
+}
+
+.input:focus + .input-clear-btn > svg {
+  fill: var(--accent-mid);
+}
+
+/* Disabled State */
+
+.input:disabled {
+  border-color: var(--neutral-light-grey);
+  background-color: var(--neutral-light-grey);
+  color: var(--neutral-grey);
+}
+
+.input:disabled::placeholder {
+  color: var(--neutral-grey);
+}
+
+.input:disabled + .input-clear-btn > svg {
+  fill: var(--neutral-light-grey);
+  pointer-events: none;
+}
+
+/* Clearable */
+
+.input-clear-btn {
+  position: absolute;
+  right: var(--space-12);
+  top: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+}
+
+.input-clear-btn > svg {
+  width: 3rem;
+  height: 3rem;
+  fill: var(--neutral-dark-grey);
+}

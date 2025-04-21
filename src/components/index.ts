@@ -1,3 +1,3 @@
 export * from "./card/card";
-export * from "./icons/ListCheck";
+export * from "./icons";
 export * from "./user-avatar/user-avatar";
