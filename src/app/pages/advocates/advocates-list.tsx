@@ -12,7 +12,7 @@ export const AdvocatesList: React.FC<AdvocatesListProps> = ({
 }) => {
   return (
     <main className="container advocates__list">
-      {isFetching && <p>Fetching</p>}
+      {isFetching && null}
       {data.map((advocate) => {
         return <AdvocateCard key={advocate.id} data={advocate} />;
       })}
