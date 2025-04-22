@@ -23,7 +23,7 @@ export const useAdvocates = () => {
         payload: { value: searchText },
       });
     }
-  }, [searchText]);
+  }, [searchText, state.advocates]);
 
   const fetchAdvocates = (
     cursor: number | null,
