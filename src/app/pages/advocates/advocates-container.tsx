@@ -1,58 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { advocatesService } from "../../../services/advocates";
-import { Advocate } from "../../../types/advocate";
-import { isIncluded } from "../../../utils";
 import { AdvocatesFilters } from "./advocates-filters";
 import { AdvocatesHeader } from "./advocates-header";
 import { AdvocatesList } from "./advocates-list";
+import { useAdvocates } from "./store/use-advocates";
 import "./styles.css";
 
 export const AdvocatesContainer = () => {
-  const [advocates, setAdvocates] = useState<Advocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
-  const [isFetching, setIsFetching] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  const [searchText, setSearchText] = useState("");
-
-  useEffect(() => {
-    advocatesService
-      .getAdvocates()
-      .then((data) => {
-        setAdvocates(data);
-        setFilteredAdvocates(data);
-      })
-      .catch((error) => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsFetching(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (advocates) {
-      const filteredAdvocates = advocates.filter((advocate) => {
-        return (
-          isIncluded(advocate.firstName, searchText) ||
-          isIncluded(advocate.lastName, searchText) ||
-          isIncluded(advocate.city, searchText) ||
-          isIncluded(advocate.degree, searchText) ||
-          isIncluded(advocate.yearsOfExperience, searchText) ||
-          advocate.specialties.some((speciality) =>
-            isIncluded(speciality, searchText)
-          )
-        );
-      });
-      setFilteredAdvocates(filteredAdvocates);
-    }
-  }, [searchText]);
-
-  const onTextSearch = (value: string) => {
-    setSearchText(value);
-  };
+  const {
+    filteredAdvocates,
+    isError,
+    isFetching,
+    onNextClick,
+    onPrevClick,
+    onTextSearch,
+    searchedText,
+    isPrevDataExist,
+  } = useAdvocates();
 
   if (isError) return <p>Error</p>;
 
@@ -61,9 +25,12 @@ export const AdvocatesContainer = () => {
       <AdvocatesHeader />
       <AdvocatesFilters
         onTextSearch={onTextSearch}
-        textSearchValue={searchText}
+        searchedText={searchedText}
+        onNext={onNextClick}
+        onPrev={onPrevClick}
+        isPrevDataExist={isPrevDataExist}
       />
-      <AdvocatesList data={filteredAdvocates} />
+      <AdvocatesList data={filteredAdvocates} isFetching={isFetching} />
     </>
   );
 };
