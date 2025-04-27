@@ -6,10 +6,12 @@ export async function GET(req: NextRequest) {
 
   const cursor = searchParams.get("cursor");
   const limit = searchParams.get("limit");
+  const search = searchParams.get("search");
 
   const { data, nextCursor } = await advocatesService.getAll({
     cursor: cursor,
     limit: limit,
+    search: search,
   });
 
   return NextResponse.json({ data, cursor: nextCursor });
