@@ -47,7 +47,9 @@ const generateAdvocateDate = () => {
       degree: generateDegree(degrees),
       specialties: generateSpeciality(specialties),
       yearsOfExperience: generateYearsOfExperience(),
-      phoneNumber: faker.phone.number({ style: "international" }).slice(2),
+      phoneNumber: Number(
+        faker.phone.number({ style: "international" }).slice(2)
+      ),
       avatar: faker.image.personPortrait({ sex: sex, size: 128 }),
     };
     data.push(person);
