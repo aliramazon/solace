@@ -75,8 +75,6 @@ export const useAdvocates = () => {
   const onTextSearch = (value: string) => {
     setSearchText(value);
   };
-  console.log(state.activeCursorsStack);
-  console.log(state.activeCursorsStack.length > 1);
 
   return {
     advocates: state.advocates,

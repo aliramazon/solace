@@ -15,7 +15,6 @@ export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
   onPrev,
   isPrevDataExist,
 }) => {
-  console.log(isPrevDataExist);
   return (
     <div className="container">
       <div className="advocates__filters">

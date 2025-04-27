@@ -30,7 +30,7 @@ export const AdvocatesContainer = () => {
         onPrev={onPrevClick}
         isPrevDataExist={isPrevDataExist}
       />
-      <AdvocatesList data={filteredAdvocates} isFetching={isFetching} />
+      {isFetching ? null : <AdvocatesList data={filteredAdvocates} />}
     </>
   );
 };

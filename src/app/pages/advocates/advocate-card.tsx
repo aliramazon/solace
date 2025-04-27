@@ -31,7 +31,7 @@ export const AdvocateCard: React.FC<AdvocateCardProps> = ({ data }) => {
         <span className="advocate__sub-header">
           {data.city} • {data.yearsOfExperience} years of experience{" "}
         </span>
-        <div className="advocate__specialities">
+        <div className="advocate__specialties">
           {data.specialties.map((speciality) => {
             return <AdvocateSpeciality key={speciality} text={speciality} />;
           })}

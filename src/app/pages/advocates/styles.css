@@ -126,7 +126,7 @@
   margin-bottom: var(--space-24);
 }
 
-.advocate__specialities {
+.advocate__specialties {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
