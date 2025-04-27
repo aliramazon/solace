@@ -1,0 +1,120 @@
+:root {
+  --neutral-white: #fff;
+  --neutral-black: #101010;
+  --primary-default: #1d4339;
+  --primary-focused: #285e50;
+  --primary-selected: #347866;
+
+  --neutral-dark-grey: #5a5a5a;
+  --neutral-grey: #9a9a9a;
+  --neutral-light-grey: #e9e9e9;
+
+  --accent-gold-light: #e9cc95;
+  --accent-light: var(--accent-mid-opal);
+  --accent-mid-opal: #d4e2dd4d;
+  --accent-mid: #3f937c;
+
+  --opal: #d4e2dd;
+  --gold: #d7a13b;
+
+  --space-2: 0.2rem;
+  --space-4: 0.4rem;
+  --space-6: 0.6rem;
+  --space-8: 0.8rem;
+  --space-12: 1.2rem;
+  --space-16: 1.6rem;
+  --space-20: 2rem;
+  --space-24: 2.4rem;
+  --space-28: 2.8rem;
+  --space-32: 3.2rem;
+  --space-36: 3.6rem;
+  --space-40: 4rem;
+  --space-48: 4.8rem;
+  --space-56: 5.6rem;
+  --space-64: 6.4rem;
+  --space-72: 7.2rem;
+  --space-80: 8rem;
+  --space-88: 8.8rem;
+  --space-96: 9.6rem;
+
+  --border-radius-0: 0;
+  --border-radius-2: 0.2rem;
+  --border-radius-4: 0.4rem;
+  --border-radius-8: 0.8rem;
+  --border-radius-12: 1.2rem;
+  --border-radius-16: 1.6rem;
+  --border-radius-20: 2rem;
+  --border-radius-24: 2.4rem;
+  --border-radius-32: 3.2rem;
+  --border-radius-36: 3.6rem;
+  --border-radius-40: 4rem;
+  --border-radius-48: 4.8rem;
+  --border-radius-56: 5.6rem;
+  --border-radius-64: 6.4rem;
+  --border-radius-72: 7.2rem;
+  --border-radius-80: 8rem;
+  --border-radius-circle: 50%;
+
+  --font-weight-400: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+
+  --font-size-10: 1rem;
+  --font-size-12: 1.2rem;
+  --font-size-13: 1.3rem;
+  --font-size-14: 1.4rem;
+  --font-size-16: 1.6rem;
+  --font-size-18: 1.8rem;
+  --font-size-20: 2rem;
+  --font-size-24: 2.4rem;
+  --font-size-32: 3.2rem;
+  --font-size-40: 4rem;
+  --font-size-48: 4.8rem;
+  --font-size-56: 5.6rem;
+  --font-size-64: 6.4rem;
+  --font-size-72: 7.2rem;
+  --font-size-80: 8rem;
+
+  --line-height-16: 1.6rem;
+  --line-height-18: 1.8rem;
+  --line-height-20: 2rem;
+  --line-height-24: 2.4rem;
+  --line-height-26: 2.6rem;
+  --line-height-28: 2.8rem;
+  --line-height-32: 3.2rem;
+  --line-height-40: 4rem;
+  --line-height-48: 4.8rem;
+  --line-height-56: 5.6rem;
+  --line-height-64: 6.4rem;
+  --line-height-72: 7.2rem;
+  --line-height-88: 8.8rem;
+  --line-height-96: 9.6rem;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%; /* it sets base font size to 10px */
+}
+
+body {
+  background-color: var(--accent-mid-opal);
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  max-width: 144rem;
+  margin: 0 auto;
+  padding: var(--space-20);
+}

@@ -1,12 +1,12 @@
 import { sql } from "drizzle-orm";
 import {
-  pgTable,
-  integer,
-  text,
-  jsonb,
-  serial,
-  timestamp,
   bigint,
+  integer,
+  jsonb,
+  pgTable,
+  serial,
+  text,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 const advocates = pgTable("advocates", {
@@ -15,9 +15,10 @@ const advocates = pgTable("advocates", {
   lastName: text("last_name").notNull(),
   city: text("city").notNull(),
   degree: text("degree").notNull(),
-  specialties: jsonb("payload").default([]).notNull(),
+  specialties: jsonb("specialties").default([]).notNull(),
   yearsOfExperience: integer("years_of_experience").notNull(),
   phoneNumber: bigint("phone_number", { mode: "number" }).notNull(),
+  avatar: text("avatar").notNull(),
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
