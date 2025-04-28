@@ -15,7 +15,8 @@ export const AdvocatesContainer = () => {
     onPrevClick,
     onTextSearch,
     searchedText,
-    isPrevDataExist,
+    hasPrevData,
+    hasNextData,
   } = useAdvocates();
 
   if (isError) return <p>Error</p>;
@@ -28,7 +29,8 @@ export const AdvocatesContainer = () => {
         searchedText={searchedText}
         onNext={onNextClick}
         onPrev={onPrevClick}
-        isPrevDataExist={isPrevDataExist}
+        hasPrevData={hasPrevData}
+        hasNextData={hasNextData}
       />
       {isFetching ? null : <AdvocatesList data={filteredAdvocates} />}
     </>
