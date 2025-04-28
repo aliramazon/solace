@@ -1,8 +1,10 @@
 import {
   and,
   asc,
+  desc,
   gt,
   ilike,
+  lte,
   or,
   sql,
   type InferSelectModel,
@@ -10,25 +12,36 @@ import {
 import { db } from "../../db";
 import { advocates } from "../../db/schema";
 
+import { Filters, Pagination } from "../types";
+
 type GetAllParams = {
-  limit: string | null;
-  cursor: string | null;
-  search: string | null;
+  pagination: Pagination;
+  filters: Filters;
 };
 
 class AdvocatesService {
-  async getAll({ limit, cursor, search }: GetAllParams): Promise<{
+  async getAll({ pagination, filters }: GetAllParams): Promise<{
     data: InferSelectModel<typeof advocates>[];
     nextCursor: number | null;
+    hasNextData: boolean;
   }> {
-    const parsedCursor = cursor ? parseInt(cursor, 10) : undefined;
-    const parsedLimit = limit ? parseInt(limit, 10) : 20;
-    const filters = [];
+    const parsedCursor = pagination.cursor
+      ? parseInt(pagination.cursor, 10)
+      : null;
+    const parsedLimit = pagination.limit ? parseInt(pagination.limit, 10) : 20;
+    const filtersArr = [];
 
-    filters.push(parsedCursor ? gt(advocates.id, parsedCursor) : undefined);
+    if (parsedCursor) {
+      if (pagination.direction === "next") {
+        filtersArr.push(gt(advocates.id, parsedCursor));
+      } else if (pagination.direction === "prev") {
+        filtersArr.push(lte(advocates.id, parsedCursor));
+      }
+    }
 
-    if (search) {
-      const value = `%${search.toLowerCase()}%`;
+    const searchFilters = [];
+    if (filters.search) {
+      const value = `%${filters.search.toLowerCase()}%`;
       const castedYearsOfExperience = sql`CAST(${advocates.yearsOfExperience} as TEXT)`;
       const specialtiesCondition = sql`
         EXISTS(
@@ -46,20 +59,58 @@ class AdvocatesService {
         sql`${castedYearsOfExperience} ILIKE ${value}`,
         specialtiesCondition
       );
-      filters.push(searchCondtion);
+      searchFilters.push(searchCondtion);
     }
+    filtersArr.push(...searchFilters);
+
+    const orderBy =
+      pagination.direction === "next" ? asc(advocates.id) : desc(advocates.id);
 
     const data = await db
       .select()
       .from(advocates)
-      .where(and(...filters))
-      .orderBy(asc(advocates.id))
-      .limit(parsedLimit);
+      .where(and(...filtersArr))
+      .orderBy(orderBy)
+      .limit(parsedLimit + 1);
 
-    const nextCursor = data.length > 0 ? data[data.length - 1].id : null;
+    let hasNextData = false;
+    let nextCursor = null;
+    let finalData: InferSelectModel<typeof advocates>[] = [];
 
-    return { data, nextCursor };
+    if (pagination.direction === "next" && data.length) {
+      finalData = data.slice(0, parsedLimit);
+      nextCursor = finalData[finalData.length - 1].id;
+      if (data.length > parsedLimit) {
+        hasNextData = true;
+      } else {
+        hasNextData = false;
+      }
+    }
+
+    if (pagination.direction === "prev" && parsedCursor !== null) {
+      if (data.length > parsedLimit) {
+        finalData = data.slice(0, parsedLimit);
+      } else {
+        finalData = data;
+      }
+
+      finalData = finalData.reverse();
+      nextCursor = parsedCursor;
+
+      const newerRow = await db
+        .select()
+        .from(advocates)
+        .where(and(gt(advocates.id, parsedCursor), ...searchFilters))
+        .limit(1);
+
+      hasNextData = newerRow.length > 0;
+    }
+
+    return {
+      data: finalData,
+      nextCursor,
+      hasNextData,
+    };
   }
 }
-
 export const advocatesService = new AdvocatesService();
