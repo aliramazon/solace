@@ -4,9 +4,11 @@ export enum AdvocateActions {
   FETCH_START = "FETCH_START",
   FETCH_SUCCESS = "FETCH_SUCCESS",
   FETCH_ERROR = "FETCH_ERROR",
-  CLICK_PREV = "CLICK_PREV",
-  CLICK_NEXT = "CLICK_NEXT",
+  GET_PREV_DATA_FROM_CACHE = "GET_PREV_DATA_FROM_CACHE",
+  GET_NEXT_DATA_FROM_CACHE = "GET_NEXT_DATA_FROM_CACHE",
   SEARCH_TEXT = "SEARCH_TEXT",
+  ADD_FILTER = "SET_FILTER",
+  DELETE_FILTER = "DELETE_FILTER",
 }
 
 interface FetchStartAction {
@@ -16,9 +18,11 @@ interface FetchStartAction {
 interface FetchSuccessAction {
   type: AdvocateActions.FETCH_SUCCESS;
   payload: {
-    cursor: number;
+    nextCursor: number | null;
+    activeCursor: number | null;
     advocates: Advocate[];
-    isInitialFetch: boolean;
+    direction: "next" | "prev" | null;
+    hasNextData: boolean;
   };
 }
 
@@ -27,11 +31,11 @@ interface FetchErrorAction {
 }
 
 interface ClickPrevAction {
-  type: AdvocateActions.CLICK_PREV;
+  type: AdvocateActions.GET_PREV_DATA_FROM_CACHE;
 }
 
 interface ClickNextAction {
-  type: AdvocateActions.CLICK_NEXT;
+  type: AdvocateActions.GET_NEXT_DATA_FROM_CACHE;
   payload: {
     data: Advocate[];
   };
@@ -44,10 +48,28 @@ interface SearchTextAction {
   };
 }
 
+interface AddFilterValue {
+  type: AdvocateActions.ADD_FILTER;
+  payload: {
+    name: string;
+    value: string;
+  };
+}
+
+interface DeleteFilterValue {
+  type: AdvocateActions.DELETE_FILTER;
+  payload: {
+    name: string;
+    value?: string;
+  };
+}
+
 export type Action =
   | FetchStartAction
   | FetchSuccessAction
   | FetchErrorAction
   | ClickPrevAction
   | ClickNextAction
-  | SearchTextAction;
+  | SearchTextAction
+  | AddFilterValue
+  | DeleteFilterValue;

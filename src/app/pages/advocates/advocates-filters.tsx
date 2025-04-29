@@ -5,7 +5,8 @@ interface AdvocatesFiltersProps {
   searchedText: string;
   onNext: () => void;
   onPrev: () => void;
-  isPrevDataExist: boolean;
+  hasNextData: boolean;
+  hasPrevData: boolean;
 }
 
 export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
@@ -13,7 +14,8 @@ export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
   searchedText,
   onNext,
   onPrev,
-  isPrevDataExist,
+  hasNextData,
+  hasPrevData,
 }) => {
   return (
     <div className="container">
@@ -30,12 +32,17 @@ export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
           <span
             onClick={onPrev}
             className={`advocates__pagination-control ${
-              !isPrevDataExist ? "advocates__pagination-control--disabled" : ""
+              !hasPrevData ? "advocates__pagination-control--disabled" : ""
             }`}
           >
             Prev
           </span>
-          <span onClick={onNext} className="advocates__pagination-control">
+          <span
+            onClick={onNext}
+            className={`advocates__pagination-control ${
+              !hasNextData ? "advocates__pagination-control--disabled" : ""
+            }`}
+          >
             Next
           </span>
         </div>

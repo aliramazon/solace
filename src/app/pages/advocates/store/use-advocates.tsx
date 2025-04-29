@@ -1,45 +1,65 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { advocatesService } from "../../../../services/advocates";
+import { Pagination } from "../../../../types/pagination";
 import { initialState, reducer } from "./reducer";
 import { AdvocateActions } from "./types";
 
 export const useAdvocates = () => {
   const [searchText, setSearchText] = useState("");
   const [state, dispatch] = useReducer(reducer, initialState);
-  const hasFetched = useRef(false);
-  const LIMIT = 9;
+
+  const LIMIT = 20;
 
   useEffect(() => {
-    if (hasFetched.current) return;
-
-    hasFetched.current = true;
-    fetchAdvocates(null, { isInitialFetch: true });
+    fetchAdvocates({
+      cursor: state.pagination.nextCursor,
+      direction: "next",
+    });
   }, []);
 
   useEffect(() => {
-    if (state.advocates) {
+    const timeoutId = setTimeout(() => {
       dispatch({
-        type: AdvocateActions.SEARCH_TEXT,
-        payload: { value: searchText },
+        type: searchText
+          ? AdvocateActions.ADD_FILTER
+          : AdvocateActions.DELETE_FILTER,
+        payload: {
+          name: "search",
+          value: searchText,
+        },
       });
-    }
-  }, [searchText, state.advocates]);
+    }, 700);
 
-  const fetchAdvocates = (
-    cursor: number | null,
-    options: { isInitialFetch: boolean }
-  ) => {
+    return () => clearTimeout(timeoutId);
+  }, [searchText]);
+
+  useEffect(() => {
+    fetchAdvocates({
+      cursor: state.pagination.nextCursor,
+      direction: "next",
+    });
+  }, [state.filters.search]);
+
+  const fetchAdvocates = (pagination: Pagination) => {
     dispatch({ type: AdvocateActions.FETCH_START });
-
     advocatesService
-      .getAdvocates({ pagination: { cursor, limit: LIMIT } })
+      .getAdvocates(
+        {
+          cursor: pagination.cursor,
+          limit: LIMIT,
+          direction: pagination.direction,
+        },
+        { ...state.filters }
+      )
       .then((data) => {
         dispatch({
           type: AdvocateActions.FETCH_SUCCESS,
           payload: {
-            cursor: data.cursor,
+            nextCursor: data.nextCursor,
+            activeCursor: pagination.cursor,
             advocates: data.advocates,
-            isInitialFetch: options.isInitialFetch,
+            direction: pagination.direction,
+            hasNextData: data.hasNextData,
           },
         });
       })
@@ -49,27 +69,13 @@ export const useAdvocates = () => {
   };
 
   const onNextClick = () => {
-    const cacheKey = state.cursor;
-
-    if (cacheKey) {
-      const cachedData = state.advocatesCache[cacheKey];
-
-      if (cachedData) {
-        dispatch({
-          type: AdvocateActions.CLICK_NEXT,
-          payload: {
-            data: cachedData,
-          },
-        });
-        return;
-      }
-    }
-
-    fetchAdvocates(state.cursor, { isInitialFetch: false });
+    fetchAdvocates({ cursor: state.pagination.nextCursor, direction: "next" });
   };
 
   const onPrevClick = () => {
-    dispatch({ type: AdvocateActions.CLICK_PREV });
+    const activeCursor =
+      state.pagination.cursorStack[state.pagination.cursorStack.length - 1];
+    fetchAdvocates({ cursor: activeCursor, direction: "prev" });
   };
 
   const onTextSearch = (value: string) => {
@@ -81,8 +87,9 @@ export const useAdvocates = () => {
     filteredAdvocates: state.filteredAdvocates,
     isError: state.isError,
     isFetching: state.isFetching,
+    hasNextData: state.pagination.hasNextData,
+    hasPrevData: state.pagination.cursorStack.length > 1,
     searchedText: searchText,
-    isPrevDataExist: state.activeCursorsStack.length > 1,
     onTextSearch,
     onNextClick,
     onPrevClick,
