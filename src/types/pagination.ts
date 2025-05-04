@@ -1,5 +1,5 @@
 export interface Pagination {
-  cursor: number | null;
+  cursor: string | null;
   limit?: number;
   direction: "next" | "prev" | null;
 }

@@ -9,8 +9,8 @@ export const initialState = {
     isFetching: true,
     isError: false,
     pagination: {
-        nextCursor: null as number | null,
-        cursorStack: [] as (null | number)[],
+        nextCursor: null as string | null,
+        cursorStack: [] as (null | string)[],
         hasNextData: false as boolean,
     },
     filters: { search: "", city: "", specialty: [], degree: "" } as Filters,

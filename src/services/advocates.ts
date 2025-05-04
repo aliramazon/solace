@@ -14,7 +14,7 @@ class Advocates {
     filters?: Filters
   ): Promise<{
     advocates: Advocate[];
-    nextCursor: number | null;
+    nextCursor: string | null;
     hasNextData: boolean;
   }> {
     const paginationQuery = buildQuery(pagination);

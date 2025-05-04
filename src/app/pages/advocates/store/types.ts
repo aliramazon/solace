@@ -18,8 +18,8 @@ interface FetchStartAction {
 interface FetchSuccessAction {
   type: AdvocateActions.FETCH_SUCCESS;
   payload: {
-    nextCursor: number | null;
-    activeCursor: number | null;
+    nextCursor: string | null;
+    activeCursor: string | null;
     advocates: Advocate[];
     direction: "next" | "prev" | null;
     hasNextData: boolean;

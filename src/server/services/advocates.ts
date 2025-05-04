@@ -2,9 +2,7 @@ import {
   and,
   asc,
   desc,
-  gt,
   ilike,
-  lte,
   or,
   sql,
   type InferSelectModel,
@@ -22,21 +20,23 @@ type GetAllParams = {
 class AdvocatesService {
   async getAll({ pagination, filters }: GetAllParams): Promise<{
     data: InferSelectModel<typeof advocates>[];
-    nextCursor: number | null;
+    nextCursor: string | null;
     hasNextData: boolean;
   }> {
-    const parsedCursor = pagination.cursor
-      ? parseInt(pagination.cursor, 10)
-      : null;
+    const [cursorExp, cursorId] = pagination.cursor
+      ? pagination.cursor.split("_").map((x) => parseInt(x, 10))
+      : [null, null];
+
     const parsedLimit = pagination.limit ? parseInt(pagination.limit, 10) : 20;
     const filtersArr = [];
 
-    if (parsedCursor) {
-      if (pagination.direction === "next") {
-        filtersArr.push(gt(advocates.id, parsedCursor));
-      } else if (pagination.direction === "prev") {
-        filtersArr.push(lte(advocates.id, parsedCursor));
-      }
+    if (cursorExp !== null && cursorId !== null) {
+      const comparator =
+        pagination.direction === "next"
+          ? sql`(${advocates.yearsOfExperience}, ${advocates.id}) < (${cursorExp}, ${cursorId})`
+          : sql`(${advocates.yearsOfExperience}, ${advocates.id}) > (${cursorExp}, ${cursorId})`;
+
+      filtersArr.push(comparator);
     }
 
     const searchFilters = [];
@@ -63,14 +63,18 @@ class AdvocatesService {
     }
     filtersArr.push(...searchFilters);
 
-    const orderBy =
-      pagination.direction === "next" ? asc(advocates.id) : desc(advocates.id);
+    const orderBy = [
+      pagination.direction === "next"
+        ? desc(advocates.yearsOfExperience)
+        : asc(advocates.yearsOfExperience),
+      pagination.direction === "next" ? desc(advocates.id) : asc(advocates.id),
+    ];
 
     const data = await db
       .select()
       .from(advocates)
       .where(and(...filtersArr))
-      .orderBy(orderBy)
+      .orderBy(...orderBy)
       .limit(parsedLimit + 1);
 
     let hasNextData = false;
@@ -79,7 +83,8 @@ class AdvocatesService {
 
     if (pagination.direction === "next" && data.length) {
       finalData = data.slice(0, parsedLimit);
-      nextCursor = finalData[finalData.length - 1].id;
+      const last = finalData[finalData.length - 1];
+      nextCursor = `${last.yearsOfExperience}_${last.id}`;
       if (data.length > parsedLimit) {
         hasNextData = true;
       } else {
@@ -87,7 +92,11 @@ class AdvocatesService {
       }
     }
 
-    if (pagination.direction === "prev" && parsedCursor !== null) {
+    if (
+      pagination.direction === "prev" &&
+      cursorId !== null &&
+      cursorExp !== null
+    ) {
       if (data.length > parsedLimit) {
         finalData = data.slice(0, parsedLimit);
       } else {
@@ -95,12 +104,17 @@ class AdvocatesService {
       }
 
       finalData = finalData.reverse();
-      nextCursor = parsedCursor;
+      nextCursor = `${cursorExp}_${cursorId}`;
 
       const newerRow = await db
         .select()
         .from(advocates)
-        .where(and(gt(advocates.id, parsedCursor), ...searchFilters))
+        .where(
+          and(
+            sql`(${advocates.yearsOfExperience}, ${advocates.id}) > (${cursorExp}, ${cursorId})`,
+            ...searchFilters
+          )
+        )
         .limit(1);
 
       hasNextData = newerRow.length > 0;
