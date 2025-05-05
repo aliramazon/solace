@@ -11,14 +11,14 @@ class Advocates {
   }
   async getAdvocates(
     pagination: Pagination,
-    filters?: Filters
+    filters: Filters
   ): Promise<{
     advocates: Advocate[];
     nextCursor: number | null;
     hasNextData: boolean;
   }> {
     const paginationQuery = buildQuery(pagination);
-    const filtersQuery = buildQuery(filters ?? {});
+    const filtersQuery = buildQuery(filters);
     let finalUrl = `${this.baseUrl}?${paginationQuery}`;
 
     if (filtersQuery) {
