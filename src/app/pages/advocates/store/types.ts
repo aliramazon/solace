@@ -4,11 +4,10 @@ export enum AdvocateActions {
   FETCH_START = "FETCH_START",
   FETCH_SUCCESS = "FETCH_SUCCESS",
   FETCH_ERROR = "FETCH_ERROR",
-  GET_PREV_DATA_FROM_CACHE = "GET_PREV_DATA_FROM_CACHE",
-  GET_NEXT_DATA_FROM_CACHE = "GET_NEXT_DATA_FROM_CACHE",
   SEARCH_TEXT = "SEARCH_TEXT",
   ADD_FILTER = "SET_FILTER",
   DELETE_FILTER = "DELETE_FILTER",
+  CHANGE_OFFSET = "CHANGE_OFFSET",
 }
 
 interface FetchStartAction {
@@ -18,27 +17,13 @@ interface FetchStartAction {
 interface FetchSuccessAction {
   type: AdvocateActions.FETCH_SUCCESS;
   payload: {
-    nextCursor: number | null;
-    activeCursor: number | null;
     advocates: Advocate[];
-    direction: "next" | "prev" | null;
     hasNextData: boolean;
   };
 }
 
 interface FetchErrorAction {
   type: AdvocateActions.FETCH_ERROR;
-}
-
-interface ClickPrevAction {
-  type: AdvocateActions.GET_PREV_DATA_FROM_CACHE;
-}
-
-interface ClickNextAction {
-  type: AdvocateActions.GET_NEXT_DATA_FROM_CACHE;
-  payload: {
-    data: Advocate[];
-  };
 }
 
 interface SearchTextAction {
@@ -64,12 +49,19 @@ interface DeleteFilterValue {
   };
 }
 
+export interface ChangeOffset {
+  type: AdvocateActions.CHANGE_OFFSET;
+  payload: {
+    changeAction: "increment" | "decrement";
+    amount: number;
+  };
+}
+
 export type Action =
   | FetchStartAction
   | FetchSuccessAction
   | FetchErrorAction
-  | ClickPrevAction
-  | ClickNextAction
   | SearchTextAction
   | AddFilterValue
-  | DeleteFilterValue;
+  | DeleteFilterValue
+  | ChangeOffset;

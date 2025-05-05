@@ -5,107 +5,106 @@ import { initialState, reducer } from "./reducer";
 import { AdvocateActions } from "./types";
 
 export const useAdvocates = () => {
-    const [searchText, setSearchText] = useState("");
-    const [state, dispatch] = useReducer(reducer, initialState);
+  const [searchText, setSearchText] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const {
+    pagination,
+    filters,
+    isFetching,
+    isError,
+    advocates,
+    filteredAdvocates,
+  } = state;
 
-    const LIMIT = 20;
+  useEffect(() => {
+    fetchAdvocates({
+      offset: pagination.offset,
+      limit: pagination.limit,
+    });
+  }, [filters, pagination.limit, pagination.offset]);
 
-    useEffect(() => {
-        fetchAdvocates({
-            cursor: state.pagination.nextCursor,
-            direction: "next",
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchText) {
+        dispatch({
+          type: AdvocateActions.ADD_FILTER,
+          payload: {
+            name: "search",
+            value: searchText,
+          },
         });
-    }, []);
-
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (searchText) {
-                dispatch({
-                    type: AdvocateActions.ADD_FILTER,
-                    payload: {
-                        name: "search",
-                        value: searchText,
-                    },
-                });
-            } else if (!searchText && state.filters.search) {
-                dispatch({
-                    type: AdvocateActions.DELETE_FILTER,
-                    payload: {
-                        name: "search",
-                        value: searchText,
-                    },
-                });
-            }
-        }, 700);
-
-        return () => clearTimeout(timeoutId);
-    }, [searchText]);
-
-    useEffect(() => {
-        fetchAdvocates({
-            cursor: state.pagination.nextCursor,
-            direction: "next",
+      } else if (!searchText && filters.search) {
+        dispatch({
+          type: AdvocateActions.DELETE_FILTER,
+          payload: {
+            name: "search",
+            value: searchText,
+          },
         });
-    }, [state.filters.search]);
+      }
+    }, 700);
 
-    const fetchAdvocates = (pagination: Pagination) => {
-        dispatch({ type: AdvocateActions.FETCH_START });
-        advocatesService
-            .getAdvocates(
-                {
-                    cursor: pagination.cursor,
-                    limit: LIMIT,
-                    direction: pagination.direction,
-                },
-                { ...state.filters }
-            )
-            .then((data) => {
-                dispatch({
-                    type: AdvocateActions.FETCH_SUCCESS,
-                    payload: {
-                        nextCursor: data.nextCursor,
-                        activeCursor: pagination.cursor,
-                        advocates: data.advocates,
-                        direction: pagination.direction,
-                        hasNextData: data.hasNextData,
-                    },
-                });
-            })
-            .catch(() => {
-                dispatch({ type: AdvocateActions.FETCH_ERROR });
-            });
-    };
+    return () => clearTimeout(timeoutId);
+  }, [searchText]);
 
-    const onNextClick = () => {
-        console.log(state.pagination.nextCursor);
-        fetchAdvocates({
-            cursor: state.pagination.nextCursor,
-            direction: "next",
+  const fetchAdvocates = (pagination: Pagination) => {
+    dispatch({ type: AdvocateActions.FETCH_START });
+    advocatesService
+      .getAdvocates(
+        {
+          limit: pagination.limit,
+          offset: pagination.offset,
+        },
+        { ...filters }
+      )
+      .then((data) => {
+        dispatch({
+          type: AdvocateActions.FETCH_SUCCESS,
+          payload: {
+            advocates: data.advocates,
+            hasNextData: data.hasNextData,
+          },
         });
-    };
+      })
+      .catch(() => {
+        dispatch({ type: AdvocateActions.FETCH_ERROR });
+      });
+  };
 
-    const onPrevClick = () => {
-        const activeCursor =
-            state.pagination.cursorStack[
-                state.pagination.cursorStack.length - 1
-            ];
-        fetchAdvocates({ cursor: activeCursor, direction: "prev" });
-    };
+  const onPrevClick = () => {
+    dispatch({
+      type: AdvocateActions.CHANGE_OFFSET,
+      payload: {
+        amount: pagination.limit,
+        changeAction: "decrement",
+      },
+    });
+  };
 
-    const onTextSearch = (value: string) => {
-        setSearchText(value);
-    };
+  const onNextClick = () => {
+    dispatch({
+      type: AdvocateActions.CHANGE_OFFSET,
+      payload: {
+        amount: pagination.limit,
+        changeAction: "increment",
+      },
+    });
+  };
 
-    return {
-        advocates: state.advocates,
-        filteredAdvocates: state.filteredAdvocates,
-        isError: state.isError,
-        isFetching: state.isFetching,
-        hasNextData: state.pagination.hasNextData,
-        hasPrevData: state.pagination.cursorStack.length > 1,
-        searchedText: searchText,
-        onTextSearch,
-        onNextClick,
-        onPrevClick,
-    };
+  const onTextSearch = (value: string) => {
+    setSearchText(value);
+  };
+
+  return {
+    advocates: advocates,
+    filteredAdvocates: filteredAdvocates,
+    isError: isError,
+    isFetching: isFetching,
+    hasNextData: pagination.hasNextData,
+    hasPrevData: pagination.offset >= pagination.limit,
+    searchedText: searchText,
+    onTextSearch,
+    onNextClick,
+    onPrevClick,
+  };
 };
