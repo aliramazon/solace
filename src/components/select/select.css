@@ -1,5 +1,6 @@
 .select-wrapper {
   position: relative;
+  max-width: max-content;
 }
 
 .select {
