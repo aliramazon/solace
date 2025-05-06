@@ -1,0 +1,42 @@
+.select-wrapper {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  outline: none;
+  height: 4rem;
+  border: 0.1rem solid var(--neutral-grey);
+  padding: 0 var(--space-12);
+  border-radius: var(--border-radius-16);
+  font-family: inherit;
+  font-size: var(--font-size-16);
+}
+
+.select:hover:not(:disabled) {
+  border-color: var(--accent-mid);
+}
+
+.select:focus {
+  border-color: var(--accent-mid);
+  box-shadow: var(--accent-light) 0px 0px 0px 4px;
+}
+
+.select-icon {
+  position: absolute;
+  pointer-events: none;
+  right: var(--space-12);
+  top: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+}
+
+.select-icon > svg {
+  fill: var(--neutral-grey);
+  width: 3rem;
+  height: 3rem;
+}
