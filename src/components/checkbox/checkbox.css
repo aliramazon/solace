@@ -1,0 +1,22 @@
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  column-gap: var(--space-12);
+}
+
+.checkbox {
+  height: 2rem;
+  width: 2rem;
+  outline: none;
+}
+
+.checkbox__label {
+  color: var(--primary-default);
+  font-weight: var(--font-weight-500);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-20);
+}
+
+.checkbox:focus {
+  box-shadow: var(--accent-light) 0px 0px 0px 4px;
+}
