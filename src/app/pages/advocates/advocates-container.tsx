@@ -1,8 +1,8 @@
 "use client";
 
-import { AdvocatesFilters } from "./advocates-filters";
 import { AdvocatesHeader } from "./advocates-header";
 import { AdvocatesList } from "./advocates-list";
+import { AdvocatesTopFilters } from "./advocates-top-filters";
 import { useAdvocatesContext } from "./store/advocates-context";
 import "./styles.css";
 import { useFetchAdvocates } from "./use-fetch-advocates";
@@ -16,7 +16,7 @@ export const AdvocatesContainer = () => {
   return (
     <>
       <AdvocatesHeader />
-      <AdvocatesFilters />
+      <AdvocatesTopFilters />
       <AdvocatesList />
     </>
   );

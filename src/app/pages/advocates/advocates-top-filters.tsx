@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
+import { Select } from "../../../components";
 import { Input } from "../../../components/input/input";
+import { usCities } from "../../../const";
 import { useAdvocatesContext } from "./store/advocates-context";
 import { AdvocateActions } from "./store/types";
 
-export const AdvocatesFilters = () => {
+const buildCitiesOptions = (cities: string[]) => {
+  return cities.map((city) => {
+    return { label: city, value: city };
+  });
+};
+
+export const AdvocatesTopFilters = () => {
   const [searchText, setSearchText] = useState("");
   const { state, dispatch } = useAdvocatesContext();
   const { pagination, filters } = state;
@@ -53,6 +61,16 @@ export const AdvocatesFilters = () => {
     });
   };
 
+  const onChangeCity = (value: string) => {
+    dispatch({
+      type: AdvocateActions.ADD_FILTER,
+      payload: {
+        name: "city",
+        value: value,
+      },
+    });
+  };
+
   const onSearch = (value: string) => {
     setSearchText(value);
   };
@@ -65,6 +83,14 @@ export const AdvocatesFilters = () => {
             placeholder="Search for your advocate"
             value={searchText}
             clearable
+          />
+        </div>
+        <div className="advocates__city-filter">
+          <Select
+            options={buildCitiesOptions(usCities)}
+            value={filters.city || ""}
+            placeholder="Select City"
+            onChange={onChangeCity}
           />
         </div>
         <div className="advocates__pagination">

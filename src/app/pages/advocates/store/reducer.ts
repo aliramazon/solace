@@ -11,7 +11,7 @@ export const initialState = {
   pagination: {
     offset: 0,
     hasNextData: false,
-    limit: 20,
+    limit: 15,
   },
   filters: { search: "", city: "", specialty: [], degree: "" } as Filters,
 };
