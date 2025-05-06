@@ -1,4 +1,12 @@
-import { and, asc, ilike, or, sql, type InferSelectModel } from "drizzle-orm";
+import {
+  and,
+  asc,
+  eq,
+  ilike,
+  or,
+  sql,
+  type InferSelectModel,
+} from "drizzle-orm";
 import { db } from "../../db";
 import { advocates } from "../../db/schema";
 
@@ -20,8 +28,8 @@ class AdvocatesService {
     const parsedLimit = pagination.limit ? parseInt(pagination.limit, 10) : 20;
     const filtersArr = [];
 
-    const searchFilters = [];
     if (filters.search) {
+      const searchFilters = [];
       const value = `%${filters.search.toLowerCase()}%`;
       const castedYearsOfExperience = sql`CAST(${advocates.yearsOfExperience} as TEXT)`;
       const specialtiesCondition = sql`
@@ -41,8 +49,12 @@ class AdvocatesService {
         specialtiesCondition
       );
       searchFilters.push(searchCondtion);
+      filtersArr.push(...searchFilters);
     }
-    filtersArr.push(...searchFilters);
+
+    if (filters.city) {
+      filtersArr.push(eq(advocates.city, filters.city));
+    }
 
     const orderBy = asc(advocates.id);
 

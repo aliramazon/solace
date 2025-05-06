@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const limit = searchParams.get("limit");
   const search = searchParams.get("search");
   const offset = searchParams.get("offset");
+  const city = searchParams.get("city");
 
   const result = await advocatesService.getAll({
     pagination: {
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
     },
     filters: {
       search: search,
+      city: city,
     },
   });
 
