@@ -3,36 +3,21 @@
 import { AdvocatesFilters } from "./advocates-filters";
 import { AdvocatesHeader } from "./advocates-header";
 import { AdvocatesList } from "./advocates-list";
-import { useAdvocates } from "./store/use-advocates";
+import { useAdvocatesContext } from "./store/advocates-context";
 import "./styles.css";
+import { useFetchAdvocates } from "./use-fetch-advocates";
 
 export const AdvocatesContainer = () => {
-  const {
-    filteredAdvocates,
-    isError,
-    isFetching,
-    onNextClick,
-    onPrevClick,
-    onTextSearch,
-    searchedText,
-    hasPrevData,
-    hasNextData,
-  } = useAdvocates();
+  useFetchAdvocates();
+  const { state } = useAdvocatesContext();
 
-  if (isError) return <p>Error</p>;
+  if (state.isError) return <p>Error</p>;
 
   return (
     <>
       <AdvocatesHeader />
-      <AdvocatesFilters
-        onTextSearch={onTextSearch}
-        searchedText={searchedText}
-        onNext={onNextClick}
-        onPrev={onPrevClick}
-        hasPrevData={hasPrevData}
-        hasNextData={hasNextData}
-      />
-      {isFetching ? null : <AdvocatesList data={filteredAdvocates} />}
+      <AdvocatesFilters />
+      <AdvocatesList />
     </>
   );
 };

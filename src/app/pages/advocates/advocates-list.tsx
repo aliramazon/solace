@@ -1,14 +1,14 @@
-import { Advocate } from "../../../types/advocate";
 import { AdvocateCard } from "./advocate-card";
+import { useAdvocatesContext } from "./store/advocates-context";
 
-interface AdvocatesListProps {
-  data: Advocate[];
-}
+export const AdvocatesList = () => {
+  const {
+    state: { filteredAdvocates, isFetching },
+  } = useAdvocatesContext();
 
-export const AdvocatesList: React.FC<AdvocatesListProps> = ({ data }) => {
-  return (
+  return isFetching ? null : (
     <main className="container advocates__list">
-      {data.map((advocate) => {
+      {filteredAdvocates.map((advocate) => {
         return <AdvocateCard key={advocate.id} data={advocate} />;
       })}
     </main>
