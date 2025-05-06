@@ -1,5 +1,5 @@
 import { faker, SexType } from "@faker-js/faker";
-import { degrees, specialties, usCities } from "./const";
+import { degrees, specialties, usCities } from "../../const";
 
 const generateNumber = (upTo: number) => {
   return Math.floor(Math.random() * upTo);
