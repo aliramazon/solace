@@ -1,6 +1,7 @@
 import {
   and,
   asc,
+  desc,
   eq,
   ilike,
   or,
@@ -10,15 +11,16 @@ import {
 import { db } from "../../db";
 import { advocates } from "../../db/schema";
 
-import { Filters, Pagination } from "../types";
+import { Filters, Pagination, Sort } from "../types";
 
 type GetAllParams = {
   pagination: Pagination;
   filters: Filters;
+  sort: Sort;
 };
 
 class AdvocatesService {
-  async getAll({ pagination, filters }: GetAllParams): Promise<{
+  async getAll({ pagination, filters, sort }: GetAllParams): Promise<{
     data: InferSelectModel<typeof advocates>[];
     hasNextData: boolean;
   }> {
@@ -26,6 +28,9 @@ class AdvocatesService {
       ? parseInt(pagination.offset, 10)
       : 0;
     const parsedLimit = pagination.limit ? parseInt(pagination.limit, 10) : 20;
+    const sortColumn = sort?.column ?? "id";
+    const sortDirection = sort?.direction ?? "asc";
+
     const filtersArr = [];
 
     if (filters.search) {
@@ -56,14 +61,26 @@ class AdvocatesService {
       filtersArr.push(eq(advocates.city, filters.city));
     }
 
-    const orderBy = asc(advocates.id);
+    let orderBy = [asc(advocates.id)];
+
+    if (sortColumn === "yearsOfExperience") {
+      if (sortDirection === "asc") {
+        orderBy = [asc(advocates.yearsOfExperience), asc(advocates.id)];
+      } else {
+        orderBy = [desc(advocates.yearsOfExperience), desc(advocates.id)];
+      }
+    } else if (sortColumn === "id") {
+      if (sortDirection === "desc") {
+        orderBy = [desc(advocates.id)];
+      }
+    }
 
     let data = await db
       .select()
       .from(advocates)
       .where(and(...filtersArr))
       .offset(parsedOffset)
-      .orderBy(orderBy)
+      .orderBy(...orderBy)
       .limit(parsedLimit + 1);
 
     let hasNextData = false;
