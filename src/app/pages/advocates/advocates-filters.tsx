@@ -1,36 +1,75 @@
+import { useEffect, useState } from "react";
 import { Input } from "../../../components/input/input";
+import { useAdvocatesContext } from "./store/advocates-context";
+import { AdvocateActions } from "./store/types";
 
-interface AdvocatesFiltersProps {
-  onTextSearch: (value: string) => void;
-  searchedText: string;
-  onNext: () => void;
-  onPrev: () => void;
-  hasNextData: boolean;
-  hasPrevData: boolean;
-}
+export const AdvocatesFilters = () => {
+  const [searchText, setSearchText] = useState("");
+  const { state, dispatch } = useAdvocatesContext();
+  const { pagination, filters } = state;
+  const hasPrevData = state.pagination.offset >= state.pagination.limit;
 
-export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
-  onTextSearch,
-  searchedText,
-  onNext,
-  onPrev,
-  hasNextData,
-  hasPrevData,
-}) => {
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchText) {
+        dispatch({
+          type: AdvocateActions.ADD_FILTER,
+          payload: {
+            name: "search",
+            value: searchText,
+          },
+        });
+      } else if (!searchText && filters.search) {
+        dispatch({
+          type: AdvocateActions.DELETE_FILTER,
+          payload: {
+            name: "search",
+            value: searchText,
+          },
+        });
+      }
+    }, 700);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchText]);
+
+  const onPrevClick = () => {
+    dispatch({
+      type: AdvocateActions.CHANGE_OFFSET,
+      payload: {
+        amount: pagination.limit,
+        changeAction: "decrement",
+      },
+    });
+  };
+
+  const onNextClick = () => {
+    dispatch({
+      type: AdvocateActions.CHANGE_OFFSET,
+      payload: {
+        amount: pagination.limit,
+        changeAction: "increment",
+      },
+    });
+  };
+
+  const onSearch = (value: string) => {
+    setSearchText(value);
+  };
   return (
     <div className="container">
       <div className="advocates__filters">
         <div className="advocates__search-box">
           <Input
-            onChange={onTextSearch}
+            onChange={onSearch}
             placeholder="Search for your advocate"
-            value={searchedText}
+            value={searchText}
             clearable
           />
         </div>
         <div className="advocates__pagination">
           <span
-            onClick={onPrev}
+            onClick={onPrevClick}
             className={`advocates__pagination-control ${
               !hasPrevData ? "advocates__pagination-control--disabled" : ""
             }`}
@@ -38,9 +77,11 @@ export const AdvocatesFilters: React.FC<AdvocatesFiltersProps> = ({
             Prev
           </span>
           <span
-            onClick={onNext}
+            onClick={onNextClick}
             className={`advocates__pagination-control ${
-              !hasNextData ? "advocates__pagination-control--disabled" : ""
+              !pagination.hasNextData
+                ? "advocates__pagination-control--disabled"
+                : ""
             }`}
           >
             Next

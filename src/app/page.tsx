@@ -1,5 +1,12 @@
 import { AdvocatesContainer } from "./pages/advocates/advocates-container";
+import { AdvocatesProvider } from "./pages/advocates/store/advocates-context";
 
-export default function Home() {
-  return <AdvocatesContainer />;
-}
+const Home = () => {
+  return (
+    <AdvocatesProvider>
+      <AdvocatesContainer />
+    </AdvocatesProvider>
+  );
+};
+
+export default Home;
