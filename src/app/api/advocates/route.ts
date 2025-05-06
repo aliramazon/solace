@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { advocatesService } from "../../../server/services/advocates";
+import { SortableColumn, SortDirection } from "../../../server/types";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -8,6 +9,8 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get("search");
   const offset = searchParams.get("offset");
   const city = searchParams.get("city");
+  const column = searchParams.get("column") as SortableColumn;
+  const direction = searchParams.get("direction") as SortDirection;
 
   const result = await advocatesService.getAll({
     pagination: {
@@ -17,6 +20,10 @@ export async function GET(req: NextRequest) {
     filters: {
       search: search,
       city: city,
+    },
+    sort: {
+      column,
+      direction,
     },
   });
 

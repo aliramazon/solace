@@ -1,4 +1,5 @@
 import { Advocate } from "../../../../types/advocate";
+import { SortableColumn, SortDirection } from "../../../../types/sort";
 
 export enum AdvocateActions {
   FETCH_START = "FETCH_START",
@@ -8,6 +9,7 @@ export enum AdvocateActions {
   ADD_FILTER = "SET_FILTER",
   DELETE_FILTER = "DELETE_FILTER",
   CHANGE_OFFSET = "CHANGE_OFFSET",
+  SORT = "SORT",
 }
 
 interface FetchStartAction {
@@ -57,6 +59,14 @@ export interface ChangeOffset {
   };
 }
 
+export interface Sort {
+  type: AdvocateActions.SORT;
+  payload: {
+    column: SortableColumn;
+    direction: SortDirection;
+  };
+}
+
 export type Action =
   | FetchStartAction
   | FetchSuccessAction
@@ -64,4 +74,5 @@ export type Action =
   | SearchTextAction
   | AddFilterValue
   | DeleteFilterValue
-  | ChangeOffset;
+  | ChangeOffset
+  | Sort;

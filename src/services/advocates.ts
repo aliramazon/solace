@@ -1,6 +1,7 @@
 import { Advocate } from "../types/advocate";
 import { Filters } from "../types/filters";
 import { Pagination } from "../types/pagination";
+import { Sort } from "../types/sort";
 import { buildQuery } from "../utils";
 
 class Advocates {
@@ -11,19 +12,19 @@ class Advocates {
   }
   async getAdvocates(
     pagination: Pagination,
-    filters: Filters
+    filters: Filters,
+    sort: Sort
   ): Promise<{
     advocates: Advocate[];
     nextCursor: number | null;
     hasNextData: boolean;
   }> {
-    const paginationQuery = buildQuery(pagination);
-    const filtersQuery = buildQuery(filters);
-    let finalUrl = `${this.baseUrl}?${paginationQuery}`;
+    let finalUrl = `${this.baseUrl}?${buildQuery({
+      ...pagination,
+      ...filters,
+      ...sort,
+    })}`;
 
-    if (filtersQuery) {
-      finalUrl = `${finalUrl}&${filtersQuery}`;
-    }
     const response = await fetch(finalUrl);
 
     if (!response.ok) {

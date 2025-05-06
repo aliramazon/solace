@@ -1,12 +1,32 @@
 import { useEffect, useState } from "react";
+import { Select } from "../../../components";
 import { Input } from "../../../components/input/input";
+import { usCities } from "../../../const";
+import { SortDirection } from "../../../types/sort";
 import { useAdvocatesContext } from "./store/advocates-context";
 import { AdvocateActions } from "./store/types";
 
-export const AdvocatesFilters = () => {
+const buildCitiesOptions = (cities: string[]) => {
+  return cities.map((city) => {
+    return { label: city, value: city };
+  });
+};
+
+const experienceSortOptions = [
+  {
+    label: "Experience: Low to High",
+    value: "asc",
+  },
+  {
+    label: "Experience: High to Low",
+    value: "desc",
+  },
+];
+
+export const AdvocatesTopFilters = () => {
   const [searchText, setSearchText] = useState("");
   const { state, dispatch } = useAdvocatesContext();
-  const { pagination, filters } = state;
+  const { pagination, filters, sort } = state;
   const hasPrevData = state.pagination.offset >= state.pagination.limit;
 
   useEffect(() => {
@@ -53,6 +73,26 @@ export const AdvocatesFilters = () => {
     });
   };
 
+  const onChangeCity = (value: string) => {
+    dispatch({
+      type: AdvocateActions.ADD_FILTER,
+      payload: {
+        name: "city",
+        value: value,
+      },
+    });
+  };
+
+  const onChangeSort = (value: string) => {
+    dispatch({
+      type: AdvocateActions.SORT,
+      payload: {
+        column: "yearsOfExperience",
+        direction: value as SortDirection,
+      },
+    });
+  };
+
   const onSearch = (value: string) => {
     setSearchText(value);
   };
@@ -67,6 +107,23 @@ export const AdvocatesFilters = () => {
             clearable
           />
         </div>
+        <div className="advocates__city-filter">
+          <Select
+            options={buildCitiesOptions(usCities)}
+            value={filters.city || ""}
+            placeholder="Select City"
+            onChange={onChangeCity}
+          />
+        </div>
+        <div className="advocates__experience-sort">
+          <Select
+            options={experienceSortOptions}
+            placeholder="Sort Experience"
+            value={sort.direction}
+            onChange={onChangeSort}
+          />
+        </div>
+
         <div className="advocates__pagination">
           <span
             onClick={onPrevClick}

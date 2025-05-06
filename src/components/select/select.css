@@ -8,6 +8,7 @@
   height: 4rem;
   border: 0.1rem solid var(--neutral-grey);
   padding: 0 var(--space-12);
+  padding-right: calc(3rem + var(--space-12) + 0.5rem);
   border-radius: var(--border-radius-16);
   font-family: inherit;
   font-size: var(--font-size-16);
