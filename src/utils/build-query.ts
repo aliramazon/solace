@@ -1,7 +1,8 @@
 import { Filters } from "../types/filters";
 import { Pagination } from "../types/pagination";
+import { Sort } from "../types/sort";
 
-export const buildQuery = (filters: Filters | Pagination) => {
+export const buildQuery = (filters: Filters | Pagination | Sort) => {
   const query: string[] = [];
 
   Object.entries(filters).forEach((entry) => {

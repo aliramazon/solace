@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Select } from "../../../components";
 import { Input } from "../../../components/input/input";
 import { usCities } from "../../../const";
+import { SortDirection } from "../../../types/sort";
 import { useAdvocatesContext } from "./store/advocates-context";
 import { AdvocateActions } from "./store/types";
 
@@ -11,10 +12,21 @@ const buildCitiesOptions = (cities: string[]) => {
   });
 };
 
+const experienceSortOptions = [
+  {
+    label: "Experience: Low to High",
+    value: "asc",
+  },
+  {
+    label: "Experience: High to Low",
+    value: "desc",
+  },
+];
+
 export const AdvocatesTopFilters = () => {
   const [searchText, setSearchText] = useState("");
   const { state, dispatch } = useAdvocatesContext();
-  const { pagination, filters } = state;
+  const { pagination, filters, sort } = state;
   const hasPrevData = state.pagination.offset >= state.pagination.limit;
 
   useEffect(() => {
@@ -71,6 +83,16 @@ export const AdvocatesTopFilters = () => {
     });
   };
 
+  const onChangeSort = (value: string) => {
+    dispatch({
+      type: AdvocateActions.SORT,
+      payload: {
+        column: "yearsOfExperience",
+        direction: value as SortDirection,
+      },
+    });
+  };
+
   const onSearch = (value: string) => {
     setSearchText(value);
   };
@@ -93,6 +115,15 @@ export const AdvocatesTopFilters = () => {
             onChange={onChangeCity}
           />
         </div>
+        <div className="advocates__experience-sort">
+          <Select
+            options={experienceSortOptions}
+            placeholder="Sort Experience"
+            value={sort.direction}
+            onChange={onChangeSort}
+          />
+        </div>
+
         <div className="advocates__pagination">
           <span
             onClick={onPrevClick}

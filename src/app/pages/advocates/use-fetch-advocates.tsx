@@ -6,14 +6,20 @@ import { AdvocateActions } from "./store/types";
 
 export const useFetchAdvocates = () => {
   const { state, dispatch } = useAdvocatesContext();
-  const { pagination, filters } = state;
+  const { pagination, filters, sort } = state;
 
   useEffect(() => {
     fetchAdvocates({
       offset: pagination.offset,
       limit: pagination.limit,
     });
-  }, [filters, pagination.limit, pagination.offset]);
+  }, [
+    filters,
+    pagination.limit,
+    pagination.offset,
+    sort.column,
+    sort.direction,
+  ]);
 
   const fetchAdvocates = (pagination: Pagination) => {
     dispatch({ type: AdvocateActions.FETCH_START });
@@ -23,7 +29,8 @@ export const useFetchAdvocates = () => {
           limit: pagination.limit,
           offset: pagination.offset,
         },
-        { ...filters }
+        { ...filters },
+        { ...sort }
       )
       .then((data) => {
         dispatch({

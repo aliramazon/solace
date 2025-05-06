@@ -1,5 +1,6 @@
 import { Advocate } from "../../../../types/advocate";
 import { Filters } from "../../../../types/filters";
+import { SortableColumn, SortDirection } from "../../../../types/sort";
 import { isMultiSelectFilter } from "../../../../utils";
 import { Action, AdvocateActions } from "./types";
 
@@ -12,6 +13,10 @@ export const initialState = {
     offset: 0,
     hasNextData: false,
     limit: 15,
+  },
+  sort: {
+    column: "" as SortableColumn,
+    direction: "" as SortDirection,
   },
   filters: { search: "", city: "", specialty: [], degree: "" } as Filters,
 };
@@ -113,6 +118,16 @@ export const reducer = (state: State, action: Action): State => {
         pagination: {
           ...state.pagination,
           offset: updatedOffset,
+        },
+      };
+    }
+    case AdvocateActions.SORT: {
+      const { column, direction } = action.payload;
+      return {
+        ...state,
+        sort: {
+          column: direction ? column : "",
+          direction,
         },
       };
     }
