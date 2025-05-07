@@ -2,6 +2,7 @@
 
 import { AdvocatesHeader } from "./advocates-header";
 import { AdvocatesList } from "./advocates-list";
+import { AdvocatesSideFilters } from "./advocates-side-filters";
 import { AdvocatesTopFilters } from "./advocates-top-filters";
 import { useAdvocatesContext } from "./store/advocates-context";
 import "./styles.css";
@@ -17,7 +18,10 @@ export const AdvocatesContainer = () => {
     <>
       <AdvocatesHeader />
       <AdvocatesTopFilters />
-      <AdvocatesList />
+      <main className="container main">
+        <AdvocatesSideFilters />
+        <AdvocatesList />
+      </main>
     </>
   );
 };

@@ -129,6 +129,11 @@ export const reducer = (state: State, action: Action): State => {
           column: direction ? column : "",
           direction,
         },
+        pagination: {
+          ...state.pagination,
+          offset: 0,
+          hasNextData: false,
+        },
       };
     }
 

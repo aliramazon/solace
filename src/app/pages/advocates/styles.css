@@ -71,29 +71,52 @@
     margin-right: 0;
   }
 }
+/* Main */
+.main {
+  display: flex;
+  column-gap: var(--space-24);
+}
+
+.advocates__side-filters {
+  width: 30%;
+}
+
+@media (max-width: 850px) {
+  .advocates__side-filters {
+    display: none;
+  }
+}
+
+.advocates__specialty-filters {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--space-12);
+}
 
 /* Advocates List */
 
 .advocates__list {
+  width: 70%;
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   gap: var(--space-24);
 }
 
+@media (max-width: 850px) {
+  .advocates__list {
+    width: 100%;
+  }
+}
+
 /* Advocate Card */
 .advocate__card {
-  width: calc((100% - var(--space-48)) / 3);
+  width: calc((100% - var(--space-24)) / 2);
   display: flex;
   flex-direction: column;
 }
 
-@media (max-width: 1024px) {
-  .advocate__card {
-    width: calc((100% - var(--space-24)) / 2);
-  }
-}
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .advocate__card {
     width: 100%;
   }
@@ -147,6 +170,7 @@
 }
 .advocate__speciality > svg {
   height: 20px;
+  flex-shrink: 0;
 }
 
 .advocate__speciality-text {
