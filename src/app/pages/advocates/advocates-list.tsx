@@ -7,10 +7,10 @@ export const AdvocatesList = () => {
   } = useAdvocatesContext();
 
   return isFetching ? null : (
-    <main className="container advocates__list">
+    <section className="advocates__list">
       {filteredAdvocates.map((advocate) => {
         return <AdvocateCard key={advocate.id} data={advocate} />;
       })}
-    </main>
+    </section>
   );
 };
