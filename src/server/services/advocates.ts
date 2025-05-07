@@ -61,6 +61,17 @@ class AdvocatesService {
       filtersArr.push(eq(advocates.city, filters.city));
     }
 
+    if (filters.specialty) {
+      const joinedSpecialties = sql.join(
+        filters.specialty.map((s) => sql`${s}`),
+        sql`, `
+      );
+
+      const specialtyFilter = sql`${advocates.specialties} ?| array[${joinedSpecialties}]`;
+
+      filtersArr.push(specialtyFilter);
+    }
+
     let orderBy = [asc(advocates.id)];
 
     if (sortColumn === "yearsOfExperience") {

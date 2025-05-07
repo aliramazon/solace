@@ -9,8 +9,10 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get("search");
   const offset = searchParams.get("offset");
   const city = searchParams.get("city");
+  const specialty = searchParams.get("specialty");
   const column = searchParams.get("column") as SortableColumn;
   const direction = searchParams.get("direction") as SortDirection;
+  console.log(specialty);
 
   const result = await advocatesService.getAll({
     pagination: {
@@ -20,6 +22,7 @@ export async function GET(req: NextRequest) {
     filters: {
       search: search,
       city: city,
+      specialty: specialty ? specialty.split("_") : null,
     },
     sort: {
       column,
