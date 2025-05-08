@@ -5,11 +5,15 @@ import { Sort } from "../types/sort";
 export const buildQuery = (filters: Filters | Pagination | Sort) => {
   const query: string[] = [];
 
-  Object.entries(filters).forEach((entry) => {
-    if (entry[1] && !Array.isArray(entry[1])) {
-      query.push(`${entry[0]}=${entry[1]}`);
-    } else if (Array.isArray(entry[1]) && entry[1].length > 0) {
-      query.push(`${entry[0]}=${entry[1].join("_")}`);
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value && !Array.isArray(value)) {
+      query.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      );
+    } else if (Array.isArray(value) && value.length > 0) {
+      query.push(
+        `${encodeURIComponent(key)}=${encodeURIComponent(value.join("_"))}`
+      );
     }
   });
 
