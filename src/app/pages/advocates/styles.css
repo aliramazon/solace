@@ -74,6 +74,7 @@
 /* Main */
 .main {
   display: flex;
+  align-items: flex-start;
   column-gap: var(--space-24);
 }
 
